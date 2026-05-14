@@ -1,0 +1,12 @@
+{
+  "name": "mebius-wired-wall",
+  "version": "0.1.0",
+  "description": "A dependency-free local anonymous Wired-era fragment wall.",
+  "scripts": {
+    "start": "python3 server.py",
+    "check": "python3 -m py_compile server.py"
+  },
+  "engines": {
+    "python": ">=3.10"
+  }
+}
