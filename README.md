@@ -24,8 +24,8 @@ Both are local to your machine. Delete `data/wired.sqlite` to reset the wall. De
 ```text
 server.py              Dependency-free Python server, upload endpoint, SQLite setup, random position/style generator
 public/index.html      Single-page wired wall markup
-public/style.css       CRT, phosphor, scanline, flicker, fixed-canvas, and fragment styling
-public/wired.js        Fetches fragments, renders them, fits the fixed canvas, and submits uploads
+public/style.css       CRT, phosphor, scanline, flicker, and fragment styling
+public/wired.js        Fetches fragments, renders them, submits uploads without leaving the page
 data/uploads/          Local image storage directory
 ```
 
@@ -42,6 +42,6 @@ Text-only, image-only, and mixed fragments are all accepted. Each new fragment r
 
 The easiest files to change by hand are:
 
-- `public/style.css` for glow, flicker, scanlines, fixed screen-space, unreadability, font stretching, and old-web form behavior.
+- `public/style.css` for glow, flicker, scanlines, unreadability, and old-web form behavior.
 - `server.py` `random_visual()` for coordinate ranges, opacity, z-index behavior, and image widths.
-- `public/wired.js` `corruption`, `terminalNoise`, and `fonts` for broken symbols, serial/barcode ghosts, and bitmap/terminal typography.
+- `public/wired.js` `corruption` for the vocabulary of broken symbols and ghost text.

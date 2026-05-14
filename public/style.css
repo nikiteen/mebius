@@ -1,9 +1,9 @@
 html, body, div, span, form, input, button, main, pre { margin: 0; padding: 0; box-sizing: border-box; }
-html { width: 100vw; height: 100vh; background: #000; overflow: hidden; }
+html { min-width: 1040px; min-height: 760px; background: #000; }
 body {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  min-width: 1040px;
+  min-height: 760px;
+  overflow: auto;
   background:
     radial-gradient(ellipse at 48% 32%, rgba(0, 72, 20, 0.38) 0%, rgba(0, 10, 0, 0.2) 36%, #000 74%),
     repeating-linear-gradient(90deg, rgba(0, 40, 14, 0.12) 0 1px, transparent 1px 8px),
@@ -50,16 +50,12 @@ input:hover, button:hover { filter: invert(1); text-shadow: 0 0 4px #fff; }
 #status { margin-left: 8px; color: #438743; opacity: 0.8; }
 
 #wall {
-  position: fixed;
-  left: var(--wall-offset-x, 0px);
-  top: var(--wall-offset-y, 22px);
+  position: relative;
   width: 1600px;
   height: 1100px;
-  margin-top: 0;
+  margin-top: 22px;
   overflow: visible;
   isolation: isolate;
-  transform: scale(var(--wall-scale, 1));
-  transform-origin: left top;
 }
 
 .fragment {
@@ -82,51 +78,12 @@ input:hover, button:hover { filter: invert(1); text-shadow: 0 0 4px #fff; }
   outline: 1px dotted #0f0;
 }
 .fragment .words {
-  display: inline-block;
-  font-family: var(--frag-font, "Courier New", Courier, monospace);
+  display: inline;
   font-size: var(--frag-font-size, 18px);
-  font-weight: var(--frag-font-weight, 400);
   letter-spacing: var(--frag-letter-spacing, 1px);
   line-height: 0.95;
   white-space: pre-wrap;
   word-break: break-word;
-  opacity: var(--frag-word-opacity, 0.82);
-  transform: scaleX(var(--frag-scale-x, 1)) scaleY(var(--frag-scale-y, 1));
-  transform-origin: left top;
-  text-rendering: optimizeSpeed;
-  font-smooth: never;
-  -webkit-font-smoothing: none;
-}
-.fragment.eroded .words {
-  color: rgba(120, 255, 120, 0.62);
-  text-decoration: line-through;
-  text-decoration-thickness: 1px;
-  text-decoration-color: rgba(0, 255, 80, 0.28);
-}
-.fragment.barcode .words {
-  font-family: "OCR A Std", "Fixedsys", "Terminal", monospace;
-  letter-spacing: calc(var(--frag-letter-spacing, 1px) + 2px);
-  background: repeating-linear-gradient(90deg, rgba(0,255,60,0.18) 0 1px, transparent 1px 3px);
-}
-.fragment.unreadable .words {
-  max-width: 340px;
-  overflow: hidden;
-  color: rgba(80, 255, 80, 0.36);
-  text-shadow: 0 0 1px #0f0, 7px 0 2px rgba(0,255,30,0.16);
-}
-.fragment.unreadable .words::selection { background: #00ff41; color: #000; }
-.fragment.terminal-noise::after {
-  content: attr(data-terminal);
-  display: block;
-  margin-top: -2px;
-  max-width: 520px;
-  overflow: hidden;
-  color: rgba(70, 255, 90, 0.34);
-  font: 9px "Terminal", "Fixedsys", "Courier New", monospace;
-  letter-spacing: 3px;
-  line-height: 0.72;
-  white-space: nowrap;
-  text-shadow: 0 0 4px rgba(0,255,50,0.5);
 }
 .fragment img {
   display: block;
@@ -151,9 +108,7 @@ input:hover, button:hover { filter: invert(1); text-shadow: 0 0 4px #fff; }
   left: 2px;
   top: 1px;
   color: rgba(0, 255, 70, 0.22);
-  font-family: "Terminal", "Fixedsys", "Courier New", monospace;
-  letter-spacing: 2px;
-  transform: translate(3px, -2px) scaleX(1.8);
+  transform: translate(3px, -2px);
   pointer-events: none;
 }
 

@@ -42,6 +42,16 @@ GHOSTS = [
     'MACHINE ID 6E-19-FE-00 // lonely packet',
     '||||¦▌▐█░¦||¦ barcode prayer',
     '蜷咲ｰ門ｿｽ old text did not survive',
+    'present day... present time...',
+    'who is watching the wire sleep?',
+    'i remember you from a dead address',
+    'NO BODY / ONLY SIGNAL',
+    'the room is darker when connected',
+    'login: anonymous   password: ********',
+    'm e m o r y  leaks through the wall',
+    'are you still there?',
+    'all images are ghosts before upload',
+    'protocol error // tenderness found',
 ]
 
 
@@ -78,7 +88,6 @@ def init_db():
             )
             '''
         )
-        ensure_column(db, 'font_weight', 'INTEGER NOT NULL DEFAULT 400')
         count = db.execute('SELECT COUNT(*) AS n FROM fragments').fetchone()['n']
         if count == 0:
             for index, message in enumerate(GHOSTS, start=1):
@@ -91,15 +100,13 @@ def init_db():
                     VALUES
                       ('text', :message, :x, :y, :z, NULL, :opacity, :rotation,
                        :font_size, :letter_spacing, :font_weight, :color, :blend, :created_at)
+                       font_size, letter_spacing, color, blend, created_at)
+                    VALUES
+                      ('text', :message, :x, :y, :z, NULL, :opacity, :rotation,
+                       :font_size, :letter_spacing, :color, :blend, :created_at)
                     ''',
                     {**visual, 'message': message, 'created_at': now_iso()},
                 )
-
-
-def ensure_column(db, name, definition):
-    columns = {row['name'] for row in db.execute('PRAGMA table_info(fragments)').fetchall()}
-    if name not in columns:
-        db.execute(f'ALTER TABLE fragments ADD COLUMN {name} {definition}')
 
 
 def random_visual(has_image, z):
@@ -108,11 +115,10 @@ def random_visual(has_image, z):
         'y': random.randint(28, 920),
         'z': z,
         'width': random.randint(90, 420) if has_image else None,
-        'opacity': round(random.uniform(0.35, 1), 2),
-        'rotation': round(random.uniform(-8, 8), 2),
-        'font_size': random.randint(8, 42),
-        'letter_spacing': round(random.uniform(-3.5, 7.5), 2),
-        'font_weight': random.choice([100, 200, 300, 400, 500, 600, 700, 800, 900]),
+        'opacity': round(random.random() * 0.55 + (0.2 if has_image else 0.3), 2),
+        'rotation': round(random.random() * 12 - 6, 2),
+        'font_size': random.randint(11, 22 if has_image else 34),
+        'letter_spacing': round(random.random() * 5 - 1.5, 2),
         'color': random.choice(COLORS),
         'blend': random.choice(BLENDS),
     }
@@ -137,7 +143,6 @@ def row_to_fragment(row):
         'rotation': row['rotation'],
         'fontSize': row['font_size'],
         'letterSpacing': row['letter_spacing'],
-        'fontWeight': row['font_weight'],
         'color': row['color'],
         'blend': row['blend'],
         'createdAt': row['created_at'],
@@ -173,7 +178,7 @@ class WiredHandler(SimpleHTTPRequestHandler):
             rows = db.execute(
                 '''
                 SELECT id, kind, message, image_path, original_name, x, y, z, width,
-                       opacity, rotation, font_size, letter_spacing, font_weight, color, blend, created_at
+                       opacity, rotation, font_size, letter_spacing, color, blend, created_at
                 FROM fragments ORDER BY id ASC
                 '''
             ).fetchall()
@@ -226,10 +231,10 @@ class WiredHandler(SimpleHTTPRequestHandler):
                     '''
                     INSERT INTO fragments
                       (kind, message, image_path, original_name, mime_type, x, y, z, width,
-                       opacity, rotation, font_size, letter_spacing, font_weight, color, blend, created_at)
+                       opacity, rotation, font_size, letter_spacing, color, blend, created_at)
                     VALUES
                       (:kind, :message, :image_path, :original_name, :mime_type, :x, :y, :z, :width,
-                       :opacity, :rotation, :font_size, :letter_spacing, :font_weight, :color, :blend, :created_at)
+                       :opacity, :rotation, :font_size, :letter_spacing, :color, :blend, :created_at)
                     ''',
                     {
                         **visual,
@@ -244,7 +249,7 @@ class WiredHandler(SimpleHTTPRequestHandler):
                 row = db.execute(
                     '''
                     SELECT id, kind, message, image_path, original_name, x, y, z, width,
-                           opacity, rotation, font_size, letter_spacing, font_weight, color, blend, created_at
+                           opacity, rotation, font_size, letter_spacing, color, blend, created_at
                     FROM fragments WHERE id = ?
                     ''',
                     (cursor.lastrowid,),

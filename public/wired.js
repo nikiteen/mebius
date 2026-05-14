@@ -4,26 +4,7 @@
   var status = document.getElementById('status');
   var staticButton = document.getElementById('static');
   var clock = document.getElementById('clock');
-  var corruption = ['�', '░', '▒', '▓', '∴', '※', 'wire', 'null', 'lain', 'echo', '000', '///', '縺', '蜷', '譁', '□', '▌', '¦', 'Ã©', 'Ð', 'ﾐ', 'ﾉ', '≡', '⌁', '▓▒░WIRE░▒▓'];
-  var terminalNoise = ['[carrier lost]', 'ATZ OK', 'IRQ=07 DMA=01', 'SYS:NULL', 'baud 14400', 'NO CARRIER', 'memchk:bad', 'login ttyS0', 'CRC_ERR', 'packet ghost', 'LAYER_ERR_09', '////SIGNAL LOST////'];
-  var artifacts = ['01001011', 'LAYER_ERR_09', '////SIGNAL LOST////', '▓▒░WIRE░▒▓', 'X-09-11-ALPHA', '1999999999999', '||||||||||||||||||', '::|:|::||:|:|::|:', '0x00FACADE', 'NULL_ROUTE', 'tty/ghost', 'SEGMENT_13_BAD'];
-  var fonts = [
-    '"Fixedsys", "Terminal", monospace',
-    '"Perfect DOS VGA 437", "IBM Plex Mono", monospace',
-    '"Lucida Console", Monaco, monospace',
-    '"Courier New", Courier, monospace',
-    '"OCR A Std", "OCR A", monospace',
-    '"MS Gothic", "Osaka-Mono", monospace',
-    '"Andale Mono", "Courier New", monospace',
-    '"VT323", "Courier New", monospace',
-    '"Share Tech Mono", "Lucida Console", monospace',
-    '"Consolas", "Courier New", monospace',
-    '"Monaco", "Lucida Console", monospace',
-    '"Menlo", "Andale Mono", monospace',
-    '"Courier", "Courier New", monospace',
-    '"Px437 IBM VGA8", "Fixedsys", monospace',
-    '"Web437 IBM VGA 8x16", "Terminal", monospace'
-  ];
+  var corruption = ['�', '░', '▒', '▓', '∴', '※', 'wire', 'null', 'lain', 'echo', '000', '///'];
 
   boot();
 
@@ -101,6 +82,11 @@
     if (decay() > 0.70) node.className += ' barcode';
     if (decay() > 0.80) node.className += ' terminal-noise';
     if (decay() > 0.86) node.className += ' unreadable';
+    node.style.setProperty('--frag-color', fragment.color);
+    node.style.setProperty('--frag-blend', fragment.blend || 'normal');
+    node.style.setProperty('--frag-blur', (Math.random() > 0.82 ? 0.6 : 0) + 'px');
+    node.dataset.id = fragment.id;
+    node.dataset.ghost = ghostText(fragment.message || fragment.originalName || 'image');
     node.title = fragment.createdAt + ' / fragment ' + fragment.id;
 
     if (fragment.imagePath) {
@@ -207,6 +193,18 @@
       state = (state * 1664525 + 1013904223) >>> 0;
       return state / 4294967296;
     };
+    var chars = text.split('');
+    var every = 11 + (salt % 7);
+    for (var i = every - 1; i < chars.length; i += every) {
+      if (chars[i] !== ' ') chars[i] = Math.random() > 0.55 ? chars[i] : corruption[(salt + i) % corruption.length];
+    }
+    if (salt % 5 === 0) return text + ' ' + corruption[salt % corruption.length];
+    return chars.join('');
+  }
+
+  function ghostText(text) {
+    var clean = (text || '').slice(0, 28);
+    return clean || corruption[Math.floor(Math.random() * corruption.length)];
   }
 
   function breakLink() {
@@ -228,6 +226,5 @@
   }
 
   function pad(n) { return n < 10 ? '0' + n : String(n); }
-  function pad4(n) { return ('0000' + n).slice(-4); }
   function random(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 }());
