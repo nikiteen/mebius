@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>mebius : local wired wall</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="phosphor"></div>
+  <div id="scanlines"></div>
+  <div id="noise"></div>
+
+  <div id="terminal-bar">
+    <form id="fragment-form" action="/api/fragments" method="post" enctype="multipart/form-data" autocomplete="off">
+      <span class="sigil">MEBIUS://LOCAL/WIRED</span>
+      <input id="message" name="message" type="text" maxlength="255" size="48" placeholder="anonymous fragment" spellcheck="false">
+      <input id="image" name="image" type="file" accept="image/*">
+      <input id="send" type="submit" value="in_signal">
+      <button id="static" type="button">break_link</button>
+      <span id="status">listening...</span>
+    </form>
+  </div>
+
+  <main id="wall" aria-label="anonymous wired wall">
+    <noscript>
+      <pre class="dead-script">javascript signal absent. the wall cannot remember you.</pre>
+    </noscript>
+  </main>
+
+  <div id="readout">
+    <span>no admin</span><span>no feed</span><span>no cure</span><span id="clock">00:00:00</span>
+  </div>
+
+  <script src="/wired.js"></script>
+</body>
+</html>
