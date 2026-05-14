@@ -28,20 +28,16 @@ UPLOADS.mkdir(parents=True, exist_ok=True)
 COLORS = ['#9cff9c', '#74ff74', '#32ff55', '#b8ffb8', '#00d83a', '#d9ffd9', '#667f66']
 BLENDS = ['normal', 'screen', 'lighten', 'difference', 'hard-light']
 GHOSTS = [
-    'present day... present time... CARRIER 14400',
-    'who is watching the wire sleep? SN-0000-AF31C0',
-    'i remember you from a dead address // /home/anon/.cache',
-    'NO BODY / ONLY SIGNAL ▌▌¦|¦▐█░¦',
-    'the room is darker when connected ÃƒÂmemory',
-    'login: anonymous   password: ********   ttyS0',
-    'm e m o r y  leaks through the wall %00 %00',
-    'are you still there? ATZ OK NO CARRIER',
-    'all images are ghosts before upload CRC_ERR',
-    'protocol error // tenderness found 譁ｰ縺励',
-    'IRQ=07 DMA=01 null null null',
-    'MACHINE ID 6E-19-FE-00 // lonely packet',
-    '||||¦▌▐█░¦||¦ barcode prayer',
-    '蜷咲ｰ門ｿｽ old text did not survive',
+    'present day... present time...',
+    'who is watching the wire sleep?',
+    'i remember you from a dead address',
+    'NO BODY / ONLY SIGNAL',
+    'the room is darker when connected',
+    'login: anonymous   password: ********',
+    'm e m o r y  leaks through the wall',
+    'are you still there?',
+    'all images are ghosts before upload',
+    'protocol error // tenderness found',
 ]
 
 

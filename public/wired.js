@@ -4,19 +4,7 @@
   var status = document.getElementById('status');
   var staticButton = document.getElementById('static');
   var clock = document.getElementById('clock');
-  var corruption = ['�', '░', '▒', '▓', '∴', '※', 'wire', 'null', 'lain', 'echo', '000', '///', '縺', '蜷', '譁', '□', '▌', '¦', 'Ã©', 'Ð', 'ﾐ'];
-  var terminalNoise = ['[carrier lost]', 'ATZ OK', 'IRQ=07 DMA=01', 'SYS:NULL', 'baud 14400', 'NO CARRIER', 'memchk:bad', 'login ttyS0', 'CRC_ERR', 'packet ghost'];
-  var fonts = [
-    '"Fixedsys", "Terminal", monospace',
-    '"Perfect DOS VGA 437", "IBM Plex Mono", monospace',
-    '"Lucida Console", Monaco, monospace',
-    '"Courier New", Courier, monospace',
-    '"OCR A Std", "OCR A", monospace',
-    '"MS Gothic", "Osaka-Mono", monospace',
-    '"Andale Mono", "Courier New", monospace',
-    '"VT323", "Courier New", monospace',
-    '"Share Tech Mono", "Lucida Console", monospace'
-  ];
+  var corruption = ['�', '░', '▒', '▓', '∴', '※', 'wire', 'null', 'lain', 'echo', '000', '///'];
 
   boot();
 
@@ -77,19 +65,10 @@
     node.style.setProperty('--frag-font-size', fragment.fontSize + 'px');
     node.style.setProperty('--frag-letter-spacing', fragment.letterSpacing + 'px');
     node.style.setProperty('--frag-color', fragment.color);
-    var decay = seeded(fragment.id);
     node.style.setProperty('--frag-blend', fragment.blend || 'normal');
-    node.style.setProperty('--frag-blur', (decay() > 0.72 ? (decay() * 1.2).toFixed(2) : 0) + 'px');
-    node.style.setProperty('--frag-font', fonts[Math.floor(decay() * fonts.length)]);
-    node.style.setProperty('--frag-scale-x', (0.42 + decay() * 2.4).toFixed(2));
-    node.style.setProperty('--frag-scale-y', (0.72 + decay() * 0.78).toFixed(2));
-    node.style.setProperty('--frag-word-opacity', (0.42 + decay() * 0.58).toFixed(2));
+    node.style.setProperty('--frag-blur', (Math.random() > 0.82 ? 0.6 : 0) + 'px');
     node.dataset.id = fragment.id;
-    node.dataset.ghost = ghostText(fragment.message || fragment.originalName || 'image', fragment.id);
-    node.dataset.terminal = terminalGhost(fragment);
-    if (decay() > 0.68) node.className += ' eroded';
-    if (decay() > 0.74) node.className += ' barcode';
-    if (decay() > 0.82) node.className += ' terminal-noise';
+    node.dataset.ghost = ghostText(fragment.message || fragment.originalName || 'image');
     node.title = fragment.createdAt + ' / fragment ' + fragment.id;
 
     if (fragment.imagePath) {
@@ -116,62 +95,18 @@
   }
 
   function corrupt(text, salt) {
-    var rng = seeded(salt * 17 + text.length);
     var chars = text.split('');
-    var every = 4 + Math.floor(rng() * 13);
-    for (var i = 0; i < chars.length; i++) {
-      if (chars[i] === ' ') continue;
-      if (i % every === every - 1 && rng() > 0.35) chars[i] = corruption[Math.floor(rng() * corruption.length)];
-      if (rng() > 0.965) chars[i] = chars[i] + corruption[Math.floor(rng() * corruption.length)];
+    var every = 11 + (salt % 7);
+    for (var i = every - 1; i < chars.length; i += every) {
+      if (chars[i] !== ' ') chars[i] = Math.random() > 0.55 ? chars[i] : corruption[(salt + i) % corruption.length];
     }
-
-    var out = chars.join('');
-    if (rng() > 0.55) out += ' ' + serial(salt, rng);
-    if (rng() > 0.72) out = encodingScar(out, rng);
-    if (rng() > 0.78) out += ' ' + barcode(rng);
-    if (rng() > 0.88) out = terminalNoise[Math.floor(rng() * terminalNoise.length)] + ' // ' + out;
-    return out;
+    if (salt % 5 === 0) return text + ' ' + corruption[salt % corruption.length];
+    return chars.join('');
   }
 
-  function ghostText(text, salt) {
-    var rng = seeded((salt || 1) * 31);
-    var clean = (text || '').slice(0, 22);
-    if (rng() > 0.55) clean = encodingScar(clean, rng);
-    return clean || corruption[Math.floor(rng() * corruption.length)] + serial(salt || 0, rng);
-  }
-
-  function terminalGhost(fragment) {
-    var rng = seeded(fragment.id * 97);
-    return terminalNoise[Math.floor(rng() * terminalNoise.length)] + ' ' + serial(fragment.id, rng) + ' ' + barcode(rng);
-  }
-
-  function serial(salt, rng) {
-    var hex = '0123456789ABCDEF';
-    var value = 'SN-' + pad((salt * 37) % 10000) + '-';
-    for (var i = 0; i < 6; i++) value += hex[Math.floor(rng() * hex.length)];
-    return value;
-  }
-
-  function barcode(rng) {
-    var bars = ['|', '¦', '▌', '▐', '█', '░'];
-    var value = '';
-    for (var i = 0; i < 18 + Math.floor(rng() * 16); i++) value += bars[Math.floor(rng() * bars.length)];
-    return value;
-  }
-
-  function encodingScar(text, rng) {
-    var scars = ['ÃƒÂ', 'â–ˆ', 'ï¿½', '縺励', '譁ｰ', '螟壹', '%00', '\\x1b', '�'];
-    if (!text) return scars[Math.floor(rng() * scars.length)];
-    var at = Math.floor(rng() * text.length);
-    return text.slice(0, at) + scars[Math.floor(rng() * scars.length)] + text.slice(at);
-  }
-
-  function seeded(seed) {
-    var state = (seed || 1) >>> 0;
-    return function () {
-      state = (state * 1664525 + 1013904223) >>> 0;
-      return state / 4294967296;
-    };
+  function ghostText(text) {
+    var clean = (text || '').slice(0, 28);
+    return clean || corruption[Math.floor(Math.random() * corruption.length)];
   }
 
   function breakLink() {

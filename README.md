@@ -42,6 +42,6 @@ Text-only, image-only, and mixed fragments are all accepted. Each new fragment r
 
 The easiest files to change by hand are:
 
-- `public/style.css` for glow, flicker, scanlines, unreadability, font stretching, and old-web form behavior.
+- `public/style.css` for glow, flicker, scanlines, unreadability, and old-web form behavior.
 - `server.py` `random_visual()` for coordinate ranges, opacity, z-index behavior, and image widths.
-- `public/wired.js` `corruption`, `terminalNoise`, and `fonts` for broken symbols, serial/barcode ghosts, and bitmap/terminal typography.
+- `public/wired.js` `corruption` for the vocabulary of broken symbols and ghost text.
